@@ -25,8 +25,8 @@
         <button id = 'download_btn'>Download</button>
     </div>
 
-    <div id="container" style = "border: 2px solid red;">
-
+    <div id="container" style = "border: 2px solid red; position: relative">
+        
     </div>
     
 </body>
@@ -79,6 +79,10 @@
             back.canvas = document.createElement('canvas')
             back.canvas.width = stage.width()
             back.canvas.height = stage.height()
+            back.canvas.style.position = 'absolute'
+            back.canvas.style.top = '0px'
+            back.canvas.style.zIndex = -1
+            document.getElementById('container').appendChild(back.canvas)
 
             back.ctx = back.canvas.getContext("2d")
             back.ctx.fillStyle = "white"
@@ -87,14 +91,18 @@
             back.ctx.lineJoin = 'round'
             back.ctx.lineWidth = 10
             
-            back.image = new Konva.Image({ image: back.canvas, opacity: opacity_range.value / 100 })
+            opacity_range.value = 50
+
+            stage.setAttr('opacity', opacity_range.value / 100)
+
+            back.image = new Konva.Image({ image: back.canvas, opacity: 0 })
             layer.add(back.image)
 
             drawing()
         }
 
         function changeBackOpacity (e) {
-            if (back.image) back.image.setAttr('opacity', e.target.value / 100)
+            if (stage) stage.setAttr('opacity', opacity_range.value / 100)
         }
         function changeBrushWidth (e) {
             if (back.ctx) back.ctx.lineWidth = e.target.value
@@ -136,8 +144,6 @@
                 back.ctx.stroke()
 
                 lastPointerPosition = pos
-
-                layer.batchDraw()
             })
         }
         
@@ -152,11 +158,9 @@
         }
 
         document.getElementById('download_btn').addEventListener('click', () => {
-            if (!back.image) return
-            back.image.setAttr('opacity', 1)
-            const dataURL = back.image.toDataURL()
+            if (!back.canvas) return
+            const dataURL = back.canvas.toDataURL()
             downloadURI(dataURL, 'collision_map.png')
-            back.image.setAttr('opacity', opacity_range.value / 100)
         })
 
       </script>
