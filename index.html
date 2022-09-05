@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Collision-map-maker</title>
+</head>
+
+<body>
+    <div id="container" style = "border: 2px solid red;">
+
+    </div>
+    <div id = "control_buttons">
+        <input type="file" style = "position: absolute; right: 0; top: 0" onchange='loadFront(event)'/>
+    </div>
+</body>
+    <script src="https://unpkg.com/konva@8/konva.min.js"></script>
+    <script>
+        function loadFront (e) {
+            const input = e.target
+            if (!input.files.length) return
+
+            const reader = new FileReader()
+
+            reader.onload = () => {
+                const dataURL = reader.result
+                initStage(dataURL)
+            }
+
+            reader.readAsDataURL(input.files[0])
+        }
+
+        function initStage (dataURL) {
+            const stage = new Konva.Stage({
+                container: 'container',
+                width: window.innerWidth,
+                height: window.innerHeight,
+            })
+        
+            const layer = new Konva.Layer()
+            stage.add(layer)
+
+            setFrontImage(dataURL, stage, layer)
+        }
+
+        function setFrontImage (dataURL, stage, layer) {
+            const image = new Image()
+            image.onload = () => {
+                const {width, height} = image
+                const front = new Konva.Image({ image })
+                stage.setAttrs({width, height})
+                layer.add(front)
+            }
+            image.src = dataURL
+        }
+        
+      </script>
+</html>
