@@ -14,11 +14,15 @@
         >
         <input type="file" onchange='loadFront(event)'/>
     
-        <label for="opacity">Opacity:</label>
+        <label for="opacity_range">Opacity:</label>
         <input type="range" min="0" max="100" value="1" onchange="changeBackOpacity(event)" step="10"
-            name = 'opacity' id = 'opacity' style = "max-width: 150px;"
+            name = 'opacity_range' id = 'opacity_range' style = "max-width: 150px;"
         >
-        
+        <label for="brush_width">Brush width:</label>
+        <input type="range" min="0" max="100" value="1" onchange="changeBrushWidth(event)" step="10"
+            name = 'brush_width' id = 'brush_width' style = "max-width: 150px;"
+        >
+        <button id = 'download_btn'>Download</button>
     </div>
 
     <div id="container" style = "border: 2px solid red;">
@@ -28,7 +32,9 @@
 </body>
     <script src="https://unpkg.com/konva@8/konva.min.js"></script>
     <script>
-        let stage = null, layer = null, front = null, back = null
+        let stage = null, layer = null, front = null, back = {canvas: null, ctx: null, image: null}
+        let isPaint = false, mode = 'brush'
+        let opacity_range = document.getElementById('opacity_range'), brush_width = document.getElementById('brush_width')
 
         function loadFront (e) {
             const input = e.target
@@ -70,18 +76,88 @@
         }
 
         function setBackImage () {
-            const image = new Image()
-            image.onload = () => {
-                back = new Konva.Image({ image, width: front.width(), height: front.height(), opacity: 0 })
-                layer.add(back)
-            }
-            image.src = 'public/white.png'
+            back.canvas = document.createElement('canvas')
+            back.canvas.width = stage.width()
+            back.canvas.height = stage.height()
+
+            back.ctx = back.canvas.getContext("2d")
+            back.ctx.fillStyle = "white"
+            back.ctx.fillRect(0, 0, back.canvas.width, back.canvas.height)
+            back.ctx.strokeStyle = '#000000'
+            back.ctx.lineJoin = 'round'
+            back.ctx.lineWidth = 10
+            
+            back.image = new Konva.Image({ image: back.canvas, opacity: opacity_range.value / 100 })
+            layer.add(back.image)
+
+            drawing()
         }
 
         function changeBackOpacity (e) {
-            console.log(e.target.value / 100)
-            if (back) back.setAttr('opacity', e.target.value / 100)
+            if (back.image) back.image.setAttr('opacity', e.target.value / 100)
+        }
+        function changeBrushWidth (e) {
+            if (back.ctx) back.ctx.lineWidth = e.target.value
+        }
+
+        function drawing () {
+
+            let lastPointerPosition = null
+
+            back.image.on('mousedown touchstart', function () {
+                isPaint = true
+                lastPointerPosition = stage.getPointerPosition()
+            })
+
+            stage.on('mouseup touchend', function () {
+                isPaint = false
+            })
+
+            stage.on('mousemove touchmove', function () {
+                if (!isPaint) return
+
+                if (mode === 'brush') back.ctx.globalCompositeOperation = 'source-over'
+                if (mode === 'eraser') back.ctx.globalCompositeOperation = 'destination-out'
+
+                back.ctx.beginPath()
+
+                let localPos = {
+                    x: lastPointerPosition.x - back.image.x(),
+                    y: lastPointerPosition.y - back.image.y(),
+                }
+                back.ctx.moveTo(localPos.x, localPos.y)
+                let pos = stage.getPointerPosition()
+                localPos = {
+                    x: pos.x - back.image.x(),
+                    y: pos.y - back.image.y(),
+                }
+                back.ctx.lineTo(localPos.x, localPos.y)
+                back.ctx.closePath()
+                back.ctx.stroke()
+
+                lastPointerPosition = pos
+
+                layer.batchDraw()
+            })
         }
         
+        function downloadURI(uri, name) {
+            const link = document.createElement('a')
+            link.download = name
+            link.href = uri
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            delete link
+        }
+
+        document.getElementById('download_btn').addEventListener('click', () => {
+            if (!back.image) return
+            back.image.setAttr('opacity', 1)
+            const dataURL = back.image.toDataURL()
+            downloadURI(dataURL, 'collision_map.png')
+            back.image.setAttr('opacity', opacity_range.value / 100)
+        })
+
       </script>
 </html>
