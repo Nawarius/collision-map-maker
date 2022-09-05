@@ -9,15 +9,27 @@
 </head>
 
 <body>
+    <div id = "control_buttons" 
+        style = "position: fixed; right: 0; top: 50; z-index: 1000; display: flex; flex-direction: column; border: 2px solid red;"
+        >
+        <input type="file" onchange='loadFront(event)'/>
+    
+        <label for="opacity">Opacity:</label>
+        <input type="range" min="0" max="100" value="1" onchange="changeBackOpacity(event)" step="10"
+            name = 'opacity' id = 'opacity' style = "max-width: 150px;"
+        >
+        
+    </div>
+
     <div id="container" style = "border: 2px solid red;">
 
     </div>
-    <div id = "control_buttons">
-        <input type="file" style = "position: absolute; right: 0; top: 0" onchange='loadFront(event)'/>
-    </div>
+    
 </body>
     <script src="https://unpkg.com/konva@8/konva.min.js"></script>
     <script>
+        let stage = null, layer = null, front = null, back = null
+
         function loadFront (e) {
             const input = e.target
             if (!input.files.length) return
@@ -33,27 +45,42 @@
         }
 
         function initStage (dataURL) {
-            const stage = new Konva.Stage({
+            stage = new Konva.Stage({
                 container: 'container',
                 width: window.innerWidth,
                 height: window.innerHeight,
             })
         
-            const layer = new Konva.Layer()
+            layer = new Konva.Layer()
             stage.add(layer)
 
-            setFrontImage(dataURL, stage, layer)
+            setFrontImage(dataURL)
         }
 
-        function setFrontImage (dataURL, stage, layer) {
+        function setFrontImage (dataURL) {
             const image = new Image()
             image.onload = () => {
-                const {width, height} = image
-                const front = new Konva.Image({ image })
-                stage.setAttrs({width, height})
+                front = new Konva.Image({ image })
                 layer.add(front)
+
+                stage.setAttrs({width: image.width, height: image.height})
+                setBackImage()
             }
             image.src = dataURL
+        }
+
+        function setBackImage () {
+            const image = new Image()
+            image.onload = () => {
+                back = new Konva.Image({ image, width: front.width(), height: front.height(), opacity: 0 })
+                layer.add(back)
+            }
+            image.src = 'public/white.png'
+        }
+
+        function changeBackOpacity (e) {
+            console.log(e.target.value / 100)
+            if (back) back.setAttr('opacity', e.target.value / 100)
         }
         
       </script>
