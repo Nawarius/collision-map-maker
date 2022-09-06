@@ -34,7 +34,21 @@
         <label for="back_map">Upload collision map</label>
         <input type="file" onchange='loadImage(event, changeBack)' id = "back_map" name = "back_map"/>
 
-        <button onclick = "generateCollisionMap()">Auto generate</button>
+        <button onclick = "startGenerate()">Auto generate</button>
+    </div>
+
+    <div id = "modal_wrapper"
+        style = "position: fixed; background-color: black; color: white; top: 0; bottom: 0; left: 0; right: 0;
+        display: flex; justify-content: center; align-items: center; display: none; z-index: 1000;" 
+    >
+        <div id = "modal" 
+            style = "width: 800px; height: 600px;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <h2 id = "modal_text">Modal text</h2>
+            <h3>For example:</h3>
+            <p>1200 x 1080 takes 3 sec</p>
+            <p>5000 x 5000 may take 90 seconds</p>
+        </div>
     </div>
 
     <div id="container" style = "border: 2px solid red; position: relative">
@@ -48,6 +62,7 @@
         let isPaint = false, mode = 'brush'
         let opacity_range = document.getElementById('opacity_range'), brush_width = document.getElementById('brush_width')
         let advanced = document.getElementById('advanced_controls')
+        let modal_wrapper = document.getElementById('modal_wrapper'), modal_text = document.getElementById('modal_text')
 
         function loadImage (e, cb) {
             const input = e.target
@@ -170,7 +185,17 @@
             })
         }
 
+        function showModal (display, message) {
+            modal_wrapper.style.display = display
+            modal_text.innerText = message
+        }
+
+        function startGenerate () {
+            showModal('flex', `The process may take some time. Need to draw ${stage.width() * stage.height()} pixels`)
+            setTimeout(async () => await generateCollisionMap(), 0)
+        }
         async function generateCollisionMap () {
+            
             stage.setAttr('opacity', 1)
             
             const canvas = front.toCanvas()
@@ -206,6 +231,7 @@
             console.log('elapsed time = ' + dt / 1000 + ' s')
 
             back.ctx.drawImage(canvas, 0, 0)
+            showModal('none', '')
             
         }
         
