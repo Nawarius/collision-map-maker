@@ -10,23 +10,33 @@
 
 <body>
     <div id = "control_buttons" 
-        style = "position: fixed; right: 0; top: 50; z-index: 1000; display: flex; flex-direction: column; border: 2px solid red;"
+        style = "position: fixed; right: 0; top: 20px; z-index: 1000; display: flex; flex-direction: column; border: 2px solid red;"
         >
-        <input type="file" onchange='loadFront(event)'/>
+        <label for="front_map">Upload front map</label>
+        <input type="file" onchange='loadImage(event, initStage)' id = "front_map" name = "front_map"/>
     
         <label for="opacity_range">Opacity:</label>
         <input type="range" min="0" max="100" value="1" onchange="changeBackOpacity(event)" step="10"
             name = 'opacity_range' id = 'opacity_range' style = "max-width: 150px;"
         >
         <label for="brush_width">Brush width:</label>
-        <input type="range" min="0" max="100" value="1" onchange="changeBrushWidth(event)" step="10"
+        <input type="range" min="0" max="200" value="1" onchange="changeBrushWidth(event)" step="10"
             name = 'brush_width' id = 'brush_width' style = "max-width: 150px;"
         >
         <button id = 'download_btn'>Download</button>
     </div>
 
+    <div id = 'advanced_controls'
+        style = "position: fixed; right: 0; bottom: 20px; z-index: 1000; 
+        display: flex; flex-direction: column; border: 2px solid red; display: none;"
+    >
+        <p>Advanced: </p>
+        <label for="back_map">Upload collision map</label>
+        <input type="file" onchange='loadImage(event, changeBack)' id = "back_map" name = "back_map"/>
+    </div>
+
     <div id="container" style = "border: 2px solid red; position: relative">
-        
+
     </div>
     
 </body>
@@ -35,19 +45,28 @@
         let stage = null, layer = null, front = null, back = {canvas: null, ctx: null, image: null}
         let isPaint = false, mode = 'brush'
         let opacity_range = document.getElementById('opacity_range'), brush_width = document.getElementById('brush_width')
+        let advanced = document.getElementById('advanced_controls')
 
-        function loadFront (e) {
+        function loadImage (e, cb) {
             const input = e.target
             if (!input.files.length) return
 
             const reader = new FileReader()
 
-            reader.onload = () => {
-                const dataURL = reader.result
-                initStage(dataURL)
-            }
-
+            reader.onload = () => cb(reader.result)
             reader.readAsDataURL(input.files[0])
+        }
+
+        function changeBack (dataURL) {
+            const image = new Image()
+            image.onload = () => {
+                if (image.width !== back.canvas.width || image.height !== back.canvas.height) {
+                    alert('Wrong collision map size')
+                    return
+                }
+                back.ctx.drawImage(image, 0, 0)
+            }
+            image.src = dataURL
         }
 
         function initStage (dataURL) {
@@ -99,6 +118,8 @@
             layer.add(back.image)
 
             drawing()
+
+            advanced.style.display = 'flex'
         }
 
         function changeBackOpacity (e) {
