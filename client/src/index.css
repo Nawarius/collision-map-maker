@@ -22,3 +22,12 @@ code {
 .drop_zone2 {
   min-width: 0px !important;
 }
+#mouse-circle {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 2px solid red;
+  border-radius: 50%;
+  pointer-events: none;
+}

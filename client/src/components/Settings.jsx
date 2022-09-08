@@ -14,16 +14,18 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ImageIcon from '@mui/icons-material/Image'
 import { FileUploader } from "react-drag-drop-files"
 import ColorLensIcon from '@mui/icons-material/ColorLens'
+import MouseCircle from '../helpers/MouseCircle'
 
 const Settings = () => {
     const {konvaSettings, setKonvaSettings, drawingSettingsRef} = useContext(MainContext)
     const {stage, back} = konvaSettings
     
     const [appInit, setAppInit] = useState(false)
+    useEffect(() => { if (appInit) MouseCircle.init() }, [appInit])
 
     const [drawOptions, setDrawOptions] = useState({
-        opacity: 0,
-        brushWidth: 10,
+        opacity: 0.5,
+        brushWidth: 32,
         brushColor: 'black'
     })
 
@@ -76,8 +78,12 @@ const Settings = () => {
 
     useEffect(() => {
         if (stage) stage.setAttr('opacity', drawOptions.opacity)
-        if (back.ctx) back.ctx.lineWidth = drawOptions.brushWidth
-        if (back.ctx) back.ctx.strokeStyle = drawOptions.brushColor
+        if (back.ctx) {
+            back.ctx.lineWidth = drawOptions.brushWidth
+            back.ctx.strokeStyle = drawOptions.brushColor
+
+            MouseCircle.changeParams(drawOptions.brushWidth)
+        }
     }, [drawOptions])
 
     const drag_zone = <div style = {{ 
