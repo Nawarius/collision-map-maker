@@ -34,6 +34,7 @@ class StageCreator {
         this.back.ctx.fillStyle = "white"
         this.back.ctx.fillRect(0, 0, this.back.canvas.width, this.back.canvas.height)
         this.back.ctx.strokeStyle = '#000000'
+        this.back.ctx.fillStyle = '#000000'
         this.back.ctx.lineJoin = 'round'
         this.back.ctx.lineWidth = 32
     }

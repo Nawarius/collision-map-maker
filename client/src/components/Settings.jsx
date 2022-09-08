@@ -15,6 +15,9 @@ import ImageIcon from '@mui/icons-material/Image'
 import { FileUploader } from "react-drag-drop-files"
 import ColorLensIcon from '@mui/icons-material/ColorLens'
 import MouseCircle from '../helpers/MouseCircle'
+import RectangleOutlinedIcon from '@mui/icons-material/RectangleOutlined'
+import BrushOutlinedIcon from '@mui/icons-material/BrushOutlined'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 const Settings = () => {
     const {konvaSettings, setKonvaSettings, drawingSettingsRef} = useContext(MainContext)
@@ -29,10 +32,10 @@ const Settings = () => {
         brushColor: 'black'
     })
 
-    const download = () => {
-        if (!back.canvas) return
-        const dataURL = back.canvas.toDataURL()
+    const [drawMode, setDrawMode] = useState('brush')
 
+    const download = () => {
+        const dataURL = back.canvas.toDataURL()
         ImageLoader.downloadImage(dataURL, 'collision_map.png')
     }
 
@@ -47,16 +50,16 @@ const Settings = () => {
         const {stage, back} = Creator.getAll()
         setKonvaSettings(Creator.getAll())
 
-        Drawer.drawing(stage, back, drawingSettingsRef)
+        Drawer.drawing(stage, back)
 
         setDrawOptions(prev => ({...prev, opacity: 0.5}))
 
         setAppInit(true)
     }
 
-    //console.log(konvaSettings)
+    const clear = () => back.ctx.clearRect(0, 0, stage.width(), stage.height())
 
-    // Opcity, Brush Width, Brush Color
+    // Opacity, Brush Width, Brush Color
     const changeHandle = (e, newVal) => {
         switch (e.target.name) {
             case 'opacity': {
@@ -71,20 +74,31 @@ const Settings = () => {
                 setDrawOptions(prev => ({...prev, brushColor: newVal}))
                 break
             }
+            case 'draw_mode': {
+                setDrawMode(newVal)
+                break
+            }
             default:
                 break
         }
     }
 
+    // Options change when react state was changed
     useEffect(() => {
-        if (stage) stage.setAttr('opacity', drawOptions.opacity)
-        if (back.ctx) {
+        if (appInit) {
+            stage.setAttr('opacity', drawOptions.opacity)
+            
             back.ctx.lineWidth = drawOptions.brushWidth
             back.ctx.strokeStyle = drawOptions.brushColor
+            back.ctx.fillStyle = drawOptions.brushColor
 
             MouseCircle.changeParams(drawOptions.brushWidth)
         }
     }, [drawOptions])
+
+    useEffect(() => {
+        if (appInit) drawMode === 'brush' ? Drawer.drawing(stage, back) : Drawer.drawRect(stage, back)
+    }, [drawMode])
 
     const drag_zone = <div style = {{ 
             border: 'dashed 2px #0658c2', borderRadius: 5, width: '100%', height: '100%', cursor: 'pointer',
@@ -153,12 +167,12 @@ const Settings = () => {
             <Box sx = {{p: 1, width: 250}}>
                 <Grid container spacing={1}>
                     <Grid item>
-                        <Tooltip title = 'Brust Color'>
+                        <Tooltip title = 'Brush Color'>
                             <ColorLensIcon />
                         </Tooltip>
                     </Grid>
                     <Grid item xs>
-                        <Typography >Color: </Typography>
+                        <Typography>Color: </Typography>
                     </Grid>
                 </Grid>
                 
@@ -168,9 +182,38 @@ const Settings = () => {
                 </ToggleButtonGroup>
             </Box>
 
-            <Tooltip title = 'Download Collision Map'>
-                <Button onClick = {download} fullWidth>Download</Button>
-            </Tooltip>
+            <Box sx = {{p: 1, width: 250}}>
+                <Grid container spacing={1}>
+                    <Grid item>
+                        <Tooltip title = {drawMode === 'brush' ? 'Brush' : 'Rectangle'}>
+                            {drawMode === 'brush' ? <BrushOutlinedIcon /> : <RectangleOutlinedIcon />}
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs>
+                    <Typography>Draw mode: </Typography>
+                    </Grid>
+                </Grid>
+                
+                <ToggleButtonGroup color="primary" value = {drawMode} exclusive onChange = {changeHandle} fullWidth>
+                        <ToggleButton value = 'brush' name = 'draw_mode'>Brush</ToggleButton>
+                        <ToggleButton value = 'rect' name = 'draw_mode'>Rect</ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+
+            <Box display = 'flex' justifyContent = 'center'><Typography>Controls</Typography></Box>
+
+            <ButtonGroup variant="outlined" fullWidth>
+                <Tooltip title = 'Clear canvas'>
+                    <Button onClick = {clear}>Clear</Button>
+                </Tooltip>
+                <Tooltip title = 'Download Collision Map'>
+                    <Button onClick = {download}>Download</Button>
+                </Tooltip>
+            </ButtonGroup>
+
+            
+            
+           
             
         </Paper>
     </div>}
