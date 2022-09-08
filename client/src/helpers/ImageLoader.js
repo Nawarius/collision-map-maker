@@ -1,6 +1,5 @@
 
 class ImageLoader {
-    constructor () {}
 
     uploadImage (e) {
         return new Promise((res, rej) => {

@@ -1,8 +1,6 @@
 
 class Drawer {
 
-    constructor () {}
-
     drawing (stage, back, drawingSettingsRef) {
 
         let lastPointerPosition = null
