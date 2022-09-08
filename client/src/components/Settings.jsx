@@ -62,7 +62,11 @@ const Settings = () => {
         setAppInit(true)
     }
 
-    const clear = () => back.ctx.clearRect(0, 0, stage.width(), stage.height())
+    const clear = () => {
+        back.ctx.fillStyle = "white"
+        back.ctx.fillRect(0, 0, stage.width(), stage.height())
+        back.ctx.fillStyle = drawOptions.brushColor
+    }
 
     // Opacity, Brush Width, Brush Color
     const changeHandle = (e, newVal) => {

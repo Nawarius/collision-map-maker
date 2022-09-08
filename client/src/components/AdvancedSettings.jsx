@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react'
+import React from 'react'
 import { useContext } from 'react'
 import { MainContext } from '../App'
 import CollisionGenerator from '../helpers/CollisionGenerator'
 import ImageLoader from '../helpers/ImageLoader'
 import { FileUploader } from "react-drag-drop-files"
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 
 const AdvancedSettings = () => {
 
