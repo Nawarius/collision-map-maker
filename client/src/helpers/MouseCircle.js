@@ -20,6 +20,8 @@ class MouseCircle {
 
             mouseCircle.style.top = revisedMousePosY + 'px'
             mouseCircle.style.left = revisedMousePosX + 'px'
+
+            if (!mouseCircle.style.display) mouseCircle.style.display = 'block'
         }
 
         delayMouseFollow()

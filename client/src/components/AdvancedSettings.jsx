@@ -12,10 +12,6 @@ const AdvancedSettings = () => {
     const {konvaSettings} = useContext(MainContext)
     const {back, stage, front} = konvaSettings
 
-    const [showAdv, setShowAdv] = useState(false)
-
-    useEffect(() => konvaSettings.stage ? setShowAdv(true) : setShowAdv(false), [konvaSettings])
-
     const changeBack = async (file) => {
         const image = await ImageLoader.uploadImage(file)
 
@@ -37,22 +33,15 @@ const AdvancedSettings = () => {
     }
 
     return <>
-        <div id = 'advanced_controls'
-            style = {{position: 'fixed', right: 10, bottom: 10, zIndex: 1000, 
-                width: 265,
-                flexDirection: 'column', border: '2px solid black', display: showAdv ? 'flex' : 'none'
-            }}
+        <Box sx = {{p: 1,  width: 250}}>
+            <Typography style = {{marginBottom: 5}}>Load an existing collision map: </Typography>
+            <FileUploader handleChange = {changeBack} name="file" multiple = {false} 
+                label = 'Upload collision map' classes = 'drop_zone2' 
+            />
 
-        >
-            <Paper>
-                <Box display = 'flex' justifyContent = 'center'><Typography>Advanced</Typography></Box>
-                <FileUploader handleChange = {changeBack} name="file" multiple = {false} 
-                    label = 'Upload collision map' classes = 'drop_zone2' 
-                />
-
-                <Button onClick = {generate} fullWidth>Auto Generate</Button>
-            </Paper>
-        </div>
+            <Typography style = {{marginBottom: 5, marginTop: 5}}>Auto generation of collision map: </Typography>
+            <Button onClick = {generate} fullWidth>Generate map</Button>
+        </Box>
     </>
 }
 

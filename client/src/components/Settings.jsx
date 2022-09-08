@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { getMainRefs, MainContext } from '../App'
 import Drawer from '../helpers/Drawer'
 import ImageLoader from '../helpers/ImageLoader'
-import { Button, Grid, IconButton, Paper, Slider, Tooltip, Typography } from '@mui/material'
+import { Button, Collapse, Grid, IconButton, Paper, Slider, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import OpacityIcon from '@mui/icons-material/Opacity'
 import LineWeightIcon from '@mui/icons-material/LineWeight'
@@ -18,9 +18,12 @@ import MouseCircle from '../helpers/MouseCircle'
 import RectangleOutlinedIcon from '@mui/icons-material/RectangleOutlined'
 import BrushOutlinedIcon from '@mui/icons-material/BrushOutlined'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import AdvancedSettings from './AdvancedSettings'
 
 const Settings = () => {
-    const {konvaSettings, setKonvaSettings, drawingSettingsRef} = useContext(MainContext)
+    const {konvaSettings, setKonvaSettings} = useContext(MainContext)
     const {stage, back} = konvaSettings
     
     const [appInit, setAppInit] = useState(false)
@@ -33,6 +36,8 @@ const Settings = () => {
     })
 
     const [drawMode, setDrawMode] = useState('brush')
+
+    const [advOpen, setAdvOpen] = useState(false)
 
     const download = () => {
         const dataURL = back.canvas.toDataURL()
@@ -211,9 +216,20 @@ const Settings = () => {
                 </Tooltip>
             </ButtonGroup>
 
-            
-            
-           
+            <Grid container spacing={1} justifyContent = 'center' alignItems='center'>
+                <Grid item>
+                    <IconButton color="primary" onClick={() => setAdvOpen(prev => !prev)}>
+                        {advOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </IconButton>
+                </Grid>
+                <Grid item xs>
+                    <Typography>Advanced options</Typography>
+                </Grid>
+            </Grid>
+
+            <Collapse in = {advOpen}>
+                <AdvancedSettings />
+            </Collapse>
             
         </Paper>
     </div>}
