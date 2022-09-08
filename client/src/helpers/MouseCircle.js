@@ -5,14 +5,14 @@ class MouseCircle {
     init () {
         let mousePosX = 0, mousePosY = 0
 
-        document.onwheel = (e) => {
-            mousePosX = e.pageX
-            mousePosY = e.pageX
-        }
+        document.onwheel = () => mouseCircle.style.display = 'none'
+        document.onmouseleave = () => mouseCircle.style.display = 'none'
 
         document.onmousemove = (e) => {
             mousePosX = e.pageX
             mousePosY = e.pageY
+
+            if (mouseCircle.style.display === 'none' || !mouseCircle.style.display) mouseCircle.style.display = 'block'
         }
 
         let delay = 1, revisedMousePosX = 0, revisedMousePosY = 0;
@@ -25,8 +25,6 @@ class MouseCircle {
 
             mouseCircle.style.top = revisedMousePosY + 'px'
             mouseCircle.style.left = revisedMousePosX + 'px'
-
-            if (!mouseCircle.style.display) mouseCircle.style.display = 'block'
         }
 
         delayMouseFollow()
