@@ -33,12 +33,12 @@ const AdvancedSettings = () => {
 
     return <>
         <Box sx = {{p: 1,  width: 250}}>
-            <Typography style = {{marginBottom: 5}}>Load an existing collision map: </Typography>
+            <Typography style = {{marginBottom: 5}}>Load an existing collision map</Typography>
             <FileUploader handleChange = {changeBack} name="file" multiple = {false} 
                 label = 'Upload collision map' classes = 'drop_zone2' 
             />
 
-            <Typography style = {{marginBottom: 5, marginTop: 5}}>Auto generation of collision map: </Typography>
+            <Typography style = {{marginBottom: 5, marginTop: 5}}>Auto generation of collision map</Typography>
             <Button onClick = {generate} fullWidth>Generate map</Button>
         </Box>
     </>

@@ -21,6 +21,8 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import AdvancedSettings from './AdvancedSettings'
+import HelpCenterIcon from '@mui/icons-material/HelpCenter'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 const Settings = () => {
     const {konvaSettings, setKonvaSettings} = useContext(MainContext)
@@ -38,6 +40,13 @@ const Settings = () => {
     const [drawMode, setDrawMode] = useState('brush')
 
     const [advOpen, setAdvOpen] = useState(false)
+    const [hideSettings, setHideSettings] = useState(false)
+
+    useState(() => {
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyH') setHideSettings(prev => !prev)
+        })
+    }, [])
 
     const download = () => {
         const dataURL = back.canvas.toDataURL()
@@ -129,7 +138,7 @@ const Settings = () => {
     </div>}
     
     {/* Menu Settings */}
-    {appInit && <div 
+    {(appInit && !hideSettings) &&<div 
         style = {{
             position: 'fixed', top: 10, right: 10, zIndex: 1000,
             display: 'flex', flexDirection: 'column', border: '2px solid black',
@@ -137,10 +146,19 @@ const Settings = () => {
         }}
     >
         <Paper>
-            <Box display = 'flex' justifyContent = 'center'><Typography>Image options</Typography></Box>
-
+            {/* Image Opacity */}
             <Box sx = {{p: 1, width: 250}}>
-                <Typography>Opacity: </Typography>
+                <Grid container spacing={1}>
+                    <Grid item xs>
+                        <Typography>Image Opacity</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Tooltip title = 'Press H key to hide this menu'>
+                            <HelpCenterIcon />
+                        </Tooltip>
+                    </Grid>
+                </Grid>
+                
                 <Grid container spacing={1}>
                     <Grid item>
                         <Tooltip title = 'Image Opacity'>
@@ -154,11 +172,10 @@ const Settings = () => {
                     </Grid>
                 </Grid>
             </Box>
-            
-            <Box display = 'flex' justifyContent = 'center'><Typography>Brush options</Typography></Box>
 
+            {/* Brush Width */}
             <Box sx = {{p: 1, width: 250}}>
-                <Typography>Weight: </Typography>
+                <Typography>Brush Weight</Typography>
                 <Grid container spacing={1}>
                     <Grid item>
                         <Tooltip title = 'Brush Weight'>
@@ -173,6 +190,7 @@ const Settings = () => {
                 </Grid>
             </Box>
             
+            {/* Brush Color */}
             <Box sx = {{p: 1, width: 250}}>
                 <Grid container spacing={1}>
                     <Grid item>
@@ -181,7 +199,7 @@ const Settings = () => {
                         </Tooltip>
                     </Grid>
                     <Grid item xs>
-                        <Typography>Color: </Typography>
+                        <Typography>Brush Color</Typography>
                     </Grid>
                 </Grid>
                 
@@ -191,6 +209,7 @@ const Settings = () => {
                 </ToggleButtonGroup>
             </Box>
 
+            {/* Draw mode (Brush/Rect) */}
             <Box sx = {{p: 1, width: 250}}>
                 <Grid container spacing={1}>
                     <Grid item>
@@ -209,17 +228,28 @@ const Settings = () => {
                 </ToggleButtonGroup>
             </Box>
 
-            <Box display = 'flex' justifyContent = 'center'><Typography>Controls</Typography></Box>
+            {/* Controls (Clear/Download) */}
+            <Box sx = {{p: 1, width: 250}}>
+                <Grid container spacing={1}>
+                    <Grid item>
+                        <SettingsIcon />
+                    </Grid>
+                    <Grid item xs>
+                        <Typography>Controls</Typography>
+                    </Grid>
+                </Grid>
 
-            <ButtonGroup variant="outlined" fullWidth>
-                <Tooltip title = 'Clear canvas'>
-                    <Button onClick = {clear}>Clear</Button>
-                </Tooltip>
-                <Tooltip title = 'Download Collision Map'>
-                    <Button onClick = {download}>Download</Button>
-                </Tooltip>
-            </ButtonGroup>
+                <ButtonGroup variant="outlined" fullWidth>
+                    <Tooltip title = 'Clear canvas'>
+                        <Button onClick = {clear}>Clear</Button>
+                    </Tooltip>
+                    <Tooltip title = 'Download Collision Map'>
+                        <Button onClick = {download}>Download</Button>
+                    </Tooltip>
+                </ButtonGroup>
+            </Box>
 
+            {/* Advanced options */}
             <Grid container spacing={1} justifyContent = 'center' alignItems='center'>
                 <Grid item>
                     <IconButton color="primary" onClick={() => setAdvOpen(prev => !prev)}>
