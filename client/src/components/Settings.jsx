@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { getMainRefs, MainContext } from '../App'
 import Drawer from '../helpers/Drawer'
 import ImageLoader from '../helpers/ImageLoader'
-import { Button, Grid, IconButton, Slider, Tooltip, Typography } from '@mui/material'
+import { Button, Grid, IconButton, Paper, Slider, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import OpacityIcon from '@mui/icons-material/Opacity'
 import LineWeightIcon from '@mui/icons-material/LineWeight'
@@ -13,6 +13,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import ImageIcon from '@mui/icons-material/Image'
 import { FileUploader } from "react-drag-drop-files"
+import ColorLensIcon from '@mui/icons-material/ColorLens'
 
 const Settings = () => {
     const {konvaSettings, setKonvaSettings, drawingSettingsRef} = useContext(MainContext)
@@ -99,59 +100,73 @@ const Settings = () => {
     </div>}
     
     {/* Menu Settings */}
-    {appInit && <div id = "control_buttons" 
+    {appInit && <div 
         style = {{
             position: 'fixed', top: 10, right: 10, zIndex: 1000,
-            display: 'flex', flexDirection: 'column', border: '2px solid red',
+            display: 'flex', flexDirection: 'column', border: '2px solid black',
             width: 265
         }}
     >
+        <Paper>
+            <Box display = 'flex' justifyContent = 'center'><Typography>Image options</Typography></Box>
 
-        <Box display = 'flex' justifyContent = 'center'><Typography>Image options</Typography></Box>
+            <Box sx = {{p: 1, width: 250}}>
+                <Typography>Opacity: </Typography>
+                <Grid container spacing={1}>
+                    <Grid item>
+                        <Tooltip title = 'Image Opacity'>
+                            <OpacityIcon />
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs>
+                        <Slider name = 'opacity' valueLabelDisplay="auto" step={0.1} min={0} max={1} marks
+                            value = {drawOptions.opacity} onChange = {changeHandle} 
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+            
+            <Box display = 'flex' justifyContent = 'center'><Typography>Brush options</Typography></Box>
 
-        <Box sx = {{p: 1, width: 250}}>
-            <Typography>Opacity: </Typography>
-            <Grid container spacing={1}>
-                <Grid item>
-                    <Tooltip title = 'Opacity'>
-                        <OpacityIcon />
-                    </Tooltip>
+            <Box sx = {{p: 1, width: 250}}>
+                <Typography>Weight: </Typography>
+                <Grid container spacing={1}>
+                    <Grid item>
+                        <Tooltip title = 'Brush Weight'>
+                            <LineWeightIcon />
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs>
+                        <Slider name = 'brush_width' valueLabelDisplay="auto" step={10} min={0} max={200} marks
+                            value = {drawOptions.brushWidth} onChange = {changeHandle} 
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs>
-                    <Slider name = 'opacity' valueLabelDisplay="auto" step={0.1} min={0} max={1} marks
-                        value = {drawOptions.opacity} onChange = {changeHandle} 
-                    />
+            </Box>
+            
+            <Box sx = {{p: 1, width: 250}}>
+                <Grid container spacing={1}>
+                    <Grid item>
+                        <Tooltip title = 'Brust Color'>
+                            <ColorLensIcon />
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs>
+                        <Typography >Color: </Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Box>
-        
-        <Box display = 'flex' justifyContent = 'center'><Typography>Brush options</Typography></Box>
+                
+                <ToggleButtonGroup color="primary" value = {drawOptions.brushColor} exclusive onChange = {changeHandle} fullWidth>
+                    <ToggleButton value = 'black' name = 'brush_color'>Black</ToggleButton>
+                    <ToggleButton value = 'white' name = 'brush_color'>White</ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
 
-        <Box sx = {{p: 1, width: 250}}>
-            <Typography>Weight: </Typography>
-            <Grid container spacing={1}>
-                <Grid item>
-                    <Tooltip title = 'Brush Weight'>
-                        <LineWeightIcon />
-                    </Tooltip>
-                </Grid>
-                <Grid item xs>
-                    <Slider name = 'brush_width' valueLabelDisplay="auto" step={10} min={0} max={200} marks
-                        value = {drawOptions.brushWidth} onChange = {changeHandle} 
-                    />
-                </Grid>
-            </Grid>
-        </Box>
-        
-        <Box sx = {{p: 1, width: 250}}>
-            <Typography>Color: </Typography>
-            <ToggleButtonGroup color="primary" value = {drawOptions.brushColor} exclusive onChange = {changeHandle} fullWidth>
-                <ToggleButton value = 'black' name = 'brush_color'>Black</ToggleButton>
-                <ToggleButton value = 'white' name = 'brush_color'>White</ToggleButton>
-            </ToggleButtonGroup>
-        </Box>
-
-        <Button onClick = {download}>Download</Button>
+            <Tooltip title = 'Download Collision Map'>
+                <Button onClick = {download} fullWidth>Download</Button>
+            </Tooltip>
+            
+        </Paper>
     </div>}
     </>
     

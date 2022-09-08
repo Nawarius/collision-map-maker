@@ -4,6 +4,8 @@ import { useContext } from 'react'
 import { MainContext } from '../App'
 import CollisionGenerator from '../helpers/CollisionGenerator'
 import ImageLoader from '../helpers/ImageLoader'
+import { FileUploader } from "react-drag-drop-files"
+import { Box, Button, Paper, Typography } from '@mui/material'
 
 const AdvancedSettings = () => {
 
@@ -14,9 +16,8 @@ const AdvancedSettings = () => {
 
     useEffect(() => konvaSettings.stage ? setShowAdv(true) : setShowAdv(false), [konvaSettings])
 
-    const changeBack = async (e) => {
-        if (!e.target.files.length) return
-        const image = await ImageLoader.uploadImage(e.target.files[0])
+    const changeBack = async (file) => {
+        const image = await ImageLoader.uploadImage(file)
 
         if (image.width !== back.canvas.width || image.height !== back.canvas.height) {
             alert('Wrong collision map size')
@@ -37,16 +38,20 @@ const AdvancedSettings = () => {
 
     return <>
         <div id = 'advanced_controls'
-            style = {{position: 'fixed', right: 0, bottom: 20, zIndex: 1000, 
-                flexDirection: 'column', border: '2px solid red', display: showAdv ? 'flex' : 'none'
+            style = {{position: 'fixed', right: 10, bottom: 10, zIndex: 1000, 
+                width: 265,
+                flexDirection: 'column', border: '2px solid black', display: showAdv ? 'flex' : 'none'
             }}
 
         >
-            <p>Advanced: </p>
-            <label htmlFor="back_map">Upload collision map</label>
-            <input type="file" onChange = {changeBack} id = "back_map" name = "back_map" multiple = {false} />
+            <Paper>
+                <Box display = 'flex' justifyContent = 'center'><Typography>Advanced</Typography></Box>
+                <FileUploader handleChange = {changeBack} name="file" multiple = {false} 
+                    label = 'Upload collision map' classes = 'drop_zone2' 
+                />
 
-            <button onClick = {generate}>Auto generate</button>
+                <Button onClick = {generate} fullWidth>Auto Generate</Button>
+            </Paper>
         </div>
     </>
 }

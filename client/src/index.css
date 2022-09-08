@@ -19,3 +19,6 @@ code {
   justify-content: center;
   align-items: center;
 }
+.drop_zone2 {
+  min-width: 0px !important;
+}
