@@ -1,11 +1,8 @@
 
 class ImageLoader {
 
-    uploadImage (e) {
-        return new Promise((res, rej) => {
-            const input = e.target
-            if (!input.files.length) rej('No file')
-        
+    uploadImage (file) {
+        return new Promise(res => {
             const reader = new FileReader()
         
             reader.onload = () => {
@@ -13,7 +10,7 @@ class ImageLoader {
                 image.onload = () => res(image)
                 image.src = reader.result
             }
-            reader.readAsDataURL(input.files[0])
+            reader.readAsDataURL(file)
         })
     }
 

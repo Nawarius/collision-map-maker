@@ -15,7 +15,8 @@ const AdvancedSettings = () => {
     useEffect(() => konvaSettings.stage ? setShowAdv(true) : setShowAdv(false), [konvaSettings])
 
     const changeBack = async (e) => {
-        const image = await ImageLoader.uploadImage(e)
+        if (!e.target.files.length) return
+        const image = await ImageLoader.uploadImage(e.target.files[0])
 
         if (image.width !== back.canvas.width || image.height !== back.canvas.height) {
             alert('Wrong collision map size')
@@ -43,7 +44,7 @@ const AdvancedSettings = () => {
         >
             <p>Advanced: </p>
             <label htmlFor="back_map">Upload collision map</label>
-            <input type="file" onChange = {changeBack} id = "back_map" name = "back_map" />
+            <input type="file" onChange = {changeBack} id = "back_map" name = "back_map" multiple = {false} />
 
             <button onClick = {generate}>Auto generate</button>
         </div>
