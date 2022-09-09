@@ -153,7 +153,7 @@ const Settings = () => {
                         <Typography>Image Opacity</Typography>
                     </Grid>
                     <Grid item>
-                        <Tooltip title = 'Press H key to hide this menu'>
+                        <Tooltip title = 'Press H key to hide/show this menu'>
                             <HelpCenterIcon />
                         </Tooltip>
                     </Grid>
@@ -232,7 +232,9 @@ const Settings = () => {
             <Box sx = {{p: 1, width: 250}}>
                 <Grid container spacing={1}>
                     <Grid item>
-                        <SettingsIcon />
+                        <Tooltip title = 'Controls'>
+                            <SettingsIcon />
+                        </Tooltip>
                     </Grid>
                     <Grid item xs>
                         <Typography>Controls</Typography>
