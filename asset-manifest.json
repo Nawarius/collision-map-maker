@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/collision-map-maker/static/css/main.15647112.css",
-    "main.js": "/collision-map-maker/static/js/main.808288f1.js",
+    "main.js": "/collision-map-maker/static/js/main.ece3fce9.js",
     "static/js/787.c4e7f8f9.chunk.js": "/collision-map-maker/static/js/787.c4e7f8f9.chunk.js",
     "index.html": "/collision-map-maker/index.html",
     "main.15647112.css.map": "/collision-map-maker/static/css/main.15647112.css.map",
-    "main.808288f1.js.map": "/collision-map-maker/static/js/main.808288f1.js.map",
+    "main.ece3fce9.js.map": "/collision-map-maker/static/js/main.ece3fce9.js.map",
     "787.c4e7f8f9.chunk.js.map": "/collision-map-maker/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.15647112.css",
-    "static/js/main.808288f1.js"
+    "static/js/main.ece3fce9.js"
   ]
 }
